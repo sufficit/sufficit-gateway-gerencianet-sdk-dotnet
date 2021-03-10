@@ -1,18 +1,23 @@
 ﻿
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
     
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net45</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
 	  <Company>GitHub</Company>
     <PackageDescription>Forked By Gerencianet and changed to .netstandard support</PackageDescription>
     <RepositoryUrl>https://github.com/sufficit/gn-api-sdk-dotnet.git</RepositoryUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+    
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+    <WarningLevel>0</WarningLevel>
+    <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
-
-  <!-- <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' "></ItemGroup> -->
 
 </Project>
