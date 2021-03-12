@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Gerencianet.SDK.Exceptions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -15,12 +17,18 @@ namespace Gerencianet.SDK
 {
     public class HttpHelper
     {
+        /// <summary>
+        /// Tempo padrão para expirar cada requisição individual ao serviço gerencianet <br />
+        /// Mili Segundos ex: (3000)ms
+        /// </summary>
+        public const int DEFAULTREQUESTTIMEOUT = 3000;
         private HttpClient client;
         private string baseUrl;
 
         public HttpHelper()
         {
             client = new HttpClient();
+            client.Timeout = TimeSpan.FromMilliseconds(DEFAULTREQUESTTIMEOUT);
         }
 
         public string BaseUrl
@@ -126,7 +134,7 @@ namespace Gerencianet.SDK
             return request;
         }
 
-        public dynamic SendRequest(WebRequest request, object body)
+        public object SendRequest(WebRequest request, object body)
         {
             if (!request.Method.Equals("GET") && body != null)
             {
@@ -145,7 +153,7 @@ namespace Gerencianet.SDK
             }
         }
 
-        public async Task<object> SendRequestAsync(HttpRequestMessage request, object body, CancellationToken token = default)
+        public async Task<object> SendRequestAsync(HttpRequestMessage request, object body, CancellationToken cancellationToken = default)
         {
             if (!request.Method.Equals(HttpMethod.Get) && body != null)
             {
@@ -153,12 +161,29 @@ namespace Gerencianet.SDK
                 request.Content = new StringContent(data, Encoding.UTF8, "application/json");                
             }
 
-            HttpResponseMessage response = await client.SendAsync(request, token);
+            HttpResponseMessage response;
 
-            response.EnsureSuccessStatusCode();
-
+            // Depuração de tempo de execução
+            Stopwatch sw = new Stopwatch(); sw.Start();
+            
+            try
+            {   
+                response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            }
+            catch (TaskCanceledException ex)
+            {
+                throw new HttpClientTimeOutException(request, client.Timeout, cancellationToken, sw.ElapsedMilliseconds);
+            }
+                           
             string json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject(json);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new GnException((int)response.StatusCode, response.ReasonPhrase, json);
+            }
+            else
+            {
+                return JsonConvert.DeserializeObject(json);
+            }
         }
     }
 }

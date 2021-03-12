@@ -60,7 +60,7 @@ namespace Gerencianet.SDK
             if (args.Length > 1 && args[1] != null)
                 body = args[1];
 
-            if (accesstoken == null)
+            if (this.accesstoken == null)
                 Authenticate();
 
             try
@@ -108,6 +108,9 @@ namespace Gerencianet.SDK
             }
             catch (GnException e)
             {
+                // Caso a resposta seja de authenticação inválida
+                // Pode ser que o token tenha vencido
+                // Portando renovamos a chave de acesso e tentamos a requisição novamente
                 if (e.Code == 401)
                 {
                     await AuthenticateAsync();
@@ -135,9 +138,12 @@ namespace Gerencianet.SDK
                 dynamic response = this.httpHelper.SendRequest(request, body);
                 this.accesstoken = response.access_token;
             }
-            catch (WebException)
+            catch
             {
-                throw GnException.Build("", 401);
+                // Zerando a chave de acesso para facilitar nas novas requisições
+                this.accesstoken = null;
+                                
+                throw;
             }
         }
 
@@ -159,9 +165,12 @@ namespace Gerencianet.SDK
                 dynamic response = await httpHelper.SendRequestAsync(request, body, cancellationToken);
                 this.accesstoken = response.access_token;
             }
-            catch (WebException)
-            {
-                throw GnException.Build("", 401);
+            catch {
+
+                // Zerando a chave de acesso para facilitar nas novas requisições
+                this.accesstoken = null;
+
+                throw;
             }
         }
 
@@ -182,7 +191,6 @@ namespace Gerencianet.SDK
             }
             catch (WebException e)
             {
-                throw;
                 if (e.Response != null && (e.Response is HttpWebResponse))
                 {
                     var statusCode = (int)((HttpWebResponse)e.Response).StatusCode;
@@ -207,29 +215,7 @@ namespace Gerencianet.SDK
                 request.Headers.Add("partner-token", this.partnerToken);
             }
 
-            try
-            {
-                return await httpHelper.SendRequestAsync(request, body, cancellationToken);
-            }
-            catch (WebException e)
-            {
-                // Executando direto 
-                throw;
-
-                if (e.Response != null && (e.Response is HttpWebResponse))
-                {
-                    var statusCode = (int)((HttpWebResponse)e.Response).StatusCode;
-                    StreamReader reader = new StreamReader(e.Response.GetResponseStream());
-                    string result = reader.ReadToEnd();
-                    if(!string.IsNullOrWhiteSpace(result))
-                        throw GnException.Build(result, statusCode);
-                    else throw;
-                }
-                else
-                {
-                    throw GnException.Build("", 500);
-                }
-            }
+            return await httpHelper.SendRequestAsync(request, body, cancellationToken);           
         }
     }
 }
