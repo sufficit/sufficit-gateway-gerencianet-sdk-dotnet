@@ -1,13 +1,34 @@
-﻿
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
-    
-  <PropertyGroup>
+  <PropertyGroup Label="Sufficit Targeting">
     <TargetFramework>netstandard2.0</TargetFramework>
-	  <Company>GitHub</Company>
+    <RootNamespace>Gerencianet.SDK</RootNamespace>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Sufficit Versioning">
+    <VersionSuffix>1.$([System.DateTime]::UtcNow.ToString(yy)).$([System.DateTime]::UtcNow.ToString(MMdd)).$([System.DateTime]::UtcNow.ToString(mmff))</VersionSuffix>
+    <AssemblyVersion Condition=" '$(VersionSuffix)' == '' ">1.0.0.0</AssemblyVersion>
+    <AssemblyVersion Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</AssemblyVersion>
+    <Version Condition=" '$(VersionSuffix)' == '' ">0.0.1.0</Version>
+    <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Sufficit General">
+    <Company>SUFFICIT SOLUÇÕES EM TECNOLOGIA DA INFORMAÇÃO</Company>
+    <Authors>HUGO CASTRO DE DECO</Authors>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PackageDescription>Forked By Gerencianet and changed to .netstandard support</PackageDescription>
     <RepositoryUrl>https://github.com/sufficit/gn-api-sdk-dotnet.git</RepositoryUrl>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Configurations>Debug;Release</Configurations>
+    <ProductName>Sufficit Gerencianet SDK</ProductName>
+    <PackageId>Sufficit.Gerencianet.SDK</PackageId>
+
+    <!-- Copia todas as dlls de dependencias para o diretório de publicação dos projetos que o utilizam -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PreserveCompilationReferences>false</PreserveCompilationReferences>
+
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
