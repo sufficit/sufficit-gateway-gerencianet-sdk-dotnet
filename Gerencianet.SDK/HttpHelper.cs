@@ -170,7 +170,7 @@ namespace Gerencianet.SDK
             {   
                 response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             }
-            catch (TaskCanceledException ex)
+            catch (TaskCanceledException)
             {
                 throw new HttpClientTimeOutException(request, client.Timeout, cancellationToken, sw.ElapsedMilliseconds);
             }
