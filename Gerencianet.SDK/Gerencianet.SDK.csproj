@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+<Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup Label="Sufficit Targeting">
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Gerencianet.SDK</RootNamespace>
@@ -14,15 +15,12 @@
     <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</Version>
   </PropertyGroup>
 
-  <PropertyGroup Label="Sufficit General">
+  <PropertyGroup Label="Sufficit Product General">
     <Company>SUFFICIT SOLUÇÕES EM TECNOLOGIA DA INFORMAÇÃO</Company>
-    <Authors>HUGO CASTRO DE DECO</Authors>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>Sufficit</Authors>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PackageDescription>Forked By Gerencianet and changed to .netstandard support</PackageDescription>
-    <RepositoryUrl>https://github.com/sufficit/gn-api-sdk-dotnet.git</RepositoryUrl>
     <ProductName>Sufficit Gerencianet SDK</ProductName>
-    <PackageId>Sufficit.Gerencianet.SDK</PackageId>
+    <AssemblyName>Sufficit.Gerencianet.SDK</AssemblyName>
 
     <!-- Copia todas as dlls de dependencias para o diretório de publicação dos projetos que o utilizam -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -30,10 +28,13 @@
 
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
-    
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
-    <WarningLevel>0</WarningLevel>
-    <OutputPath>bin\Debug\</OutputPath>
+
+  <PropertyGroup Label="Sufficit Pacote NUGET">
+    <Name>Sufficit.Gerencianet.SDK</Name>
+    <PackageId>Sufficit.Gerencianet.SDK</PackageId>
+    <PackageDescription>Forked By Gerencianet and changed to .netstandard support</PackageDescription>
+    <RepositoryUrl>https://github.com/sufficit/gn-api-sdk-dotnet.git</RepositoryUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
