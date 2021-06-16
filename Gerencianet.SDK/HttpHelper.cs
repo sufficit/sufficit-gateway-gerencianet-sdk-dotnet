@@ -89,7 +89,7 @@ namespace Gerencianet.SDK
             return request;
         }
 
-        public HttpRequestMessage GetHttpRequest(string endpoint, string method, object query)
+        public HttpRequestMessage GetHttpRequest(string endpoint, HttpMethod method, object query)
         {
             if (query != null)
             {
@@ -129,7 +129,7 @@ namespace Gerencianet.SDK
 
             HttpRequestMessage request = new HttpRequestMessage();
             request.RequestUri = new Uri(string.Format("{0}{1}", baseUrl, endpoint));
-            request.Method = new HttpMethod(method);
+            request.Method = method;
             request.Headers.Add("ContentType", "application/json");
             return request;
         }
