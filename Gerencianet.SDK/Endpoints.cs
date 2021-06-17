@@ -15,15 +15,17 @@ namespace Gerencianet.SDK
     {
         #region CONSTRUTORS
 
-        public Endpoints(string clientId, string clientSecret, bool sandbox)
+        public Endpoints(APIAuthPair authpair, bool sandbox)
         {
-            this.clientId = clientId;
-            this.clientSecret = clientSecret;
+            this.clientId = authpair.id;
+            this.clientSecret = authpair.secret;
             this.httpHelper = new HttpHelper();
             this.httpHelper.BaseUrl = sandbox ? Endpoints.ApiBaseSandboxURL : Endpoints.ApiBaseURL;
             this.accesstoken = null;
             this.partnerToken = null;
         }
+
+        public Endpoints(string clientId, string clientSecret, bool sandbox) : this(new APIAuthPair() { id = clientId, secret = clientSecret }, sandbox) { }
 
         static Endpoints()
         {
