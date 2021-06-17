@@ -4,6 +4,7 @@
   <PropertyGroup Label="Sufficit Targeting">
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Gerencianet.SDK</RootNamespace>
+    <AssemblyName>SufficitIntegrationGerencianetSDK</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Label="Sufficit Versioning">
@@ -18,8 +19,7 @@
     <Company>SUFFICIT SOLUÇÕES EM TECNOLOGIA DA INFORMAÇÃO</Company>
     <Authors>Sufficit</Authors>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <ProductName>Sufficit Gerencianet SDK</ProductName>
-    <AssemblyName>Sufficit.Gerencianet.SDK</AssemblyName>
+    <ProductName>Sufficit Integration Gerencianet SDK</ProductName>
 
     <!-- Copia todas as dlls de dependencias para o diretório de publicação dos projetos que o utilizam -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -32,7 +32,7 @@
     <Name>Sufficit.Gerencianet.SDK</Name>
     <PackageId>Sufficit.Gerencianet.SDK</PackageId>
     <PackageDescription>Forked By Gerencianet and changed to .netstandard support</PackageDescription>
-    <RepositoryUrl>https://github.com/sufficit/gn-api-sdk-dotnet.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/sufficit/sufficit-integration-gerencianet-sdk-dotnet</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
