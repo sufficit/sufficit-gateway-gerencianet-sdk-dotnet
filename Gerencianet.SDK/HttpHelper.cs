@@ -1,4 +1,4 @@
-﻿using Gerencianet.SDK.Exceptions;
+﻿using GerencianetSDK.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Gerencianet.SDK
+namespace GerencianetSDK
 {
     public class HttpHelper
     {
@@ -22,13 +22,15 @@ namespace Gerencianet.SDK
         /// Mili Segundos ex: (3000)ms
         /// </summary>
         public const int DEFAULTREQUESTTIMEOUT = 3000;
-        private HttpClient client;
+        private readonly HttpClient client;
         private string baseUrl;
 
         public HttpHelper()
         {
-            client = new HttpClient();
-            client.Timeout = TimeSpan.FromMilliseconds(DEFAULTREQUESTTIMEOUT);
+            client = new HttpClient
+            {
+                Timeout = TimeSpan.FromMilliseconds(DEFAULTREQUESTTIMEOUT)
+            };
         }
 
         public string BaseUrl
@@ -71,7 +73,7 @@ namespace Gerencianet.SDK
                 }
 
                 string queryString = "";
-                foreach (KeyValuePair<String, object> pair in queryDict)
+                foreach (KeyValuePair<string, object> pair in queryDict)
                 {
                     if (queryString.Equals(""))
                         queryString = "?";

@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 
-namespace Gerencianet.SDK.Exceptions
+namespace GerencianetSDK.Exceptions
 {
     /// <summary>
     /// Acionado quando o tempo máximo de requisição do cliente http foi alcançado 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 
-namespace Gerencianet.SDK
+namespace GerencianetSDK
 {
     /// <summary>
     /// Route to lookup and method to use 
