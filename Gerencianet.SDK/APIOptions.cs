@@ -8,7 +8,7 @@ namespace GerencianetSDK
     {
         public const string SectionName = "Gerencianet";
 
-        public APIAuthOptions Auth { get; set; }
+        public APIAuthOptions Auth { get; }
 
         /// <summary>
         /// Use development environment
@@ -19,6 +19,11 @@ namespace GerencianetSDK
         /// Certificate file for PIX Api
         /// </summary>
         public string Certificate { get; set; }
+
+        public APIOptions()
+        {
+            Auth = new APIAuthOptions();
+        }
 
         public override bool Equals(object obj)
         {
