@@ -9,7 +9,7 @@ namespace GerencianetSDK
     /// </summary>
     public class APIAuthPair
     {
-        public string id { get; set; }
-        public string secret { get; set; }
+        public virtual string id { get; set; }
+        public virtual string secret { get; set; }
     }
 }

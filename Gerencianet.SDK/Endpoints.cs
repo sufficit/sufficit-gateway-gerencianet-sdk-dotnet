@@ -232,7 +232,7 @@ namespace GerencianetSDK
 
             IRestResponse restResponse = client.Execute(request);
             string response = restResponse.Content;
-            return response;
+            return JObject.Parse(response);
         }
 
         private static string ClientId { get => clientId; set => clientId = value; }
