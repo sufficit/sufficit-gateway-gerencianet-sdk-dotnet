@@ -37,7 +37,8 @@ namespace GerencianetSDK
             Initialize(id, secret);
         }
 
-        public APIClient(ILogger logger = default) {
+        public APIClient(ILogger logger = default) 
+        {
             _logger = logger;
             _http = new HttpClient
             {
@@ -45,7 +46,8 @@ namespace GerencianetSDK
             };
 
             // Old methods
-            _helper = new HttpHelper();
+            _helper = new HttpHelper(logger);
+            _helper.BaseUrl = APIConstants.URLDEFAULT.Production;
         }
 
         protected void Initialize(string id, string secret)
@@ -60,8 +62,7 @@ namespace GerencianetSDK
 
         private void UpdateAuthorizationHeaders(string token)
         {
-            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);           
-
+            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         private async Task Authenticate(CancellationToken cancellationToken = default)
@@ -165,7 +166,10 @@ namespace GerencianetSDK
         private async Task<object> RequestEndpointAsync(string endpoint, HttpMethod method, object query, object body, CancellationToken cancellationToken = default)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            string baseUrl = APIConstants.URLDEFAULT.Production;
             HttpRequestMessage request = _helper.GetHttpRequest(endpoint, method, query);
+            _logger?.LogDebug($"requesting: { request.RequestUri }");
+
             request.Headers.Add("Authorization", string.Format("Bearer {0}", _token));
             request.Headers.Add("api-sdk", string.Format("dotnet-{0}", DEFAULTVERSION));
             return await _helper.SendRequestAsync(request, body, cancellationToken);

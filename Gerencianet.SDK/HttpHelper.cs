@@ -1,4 +1,5 @@
 ﻿using GerencianetSDK.Exceptions;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -23,11 +24,13 @@ namespace GerencianetSDK
         /// </summary>
         public const int DEFAULTREQUESTTIMEOUT = 3000;
         private readonly HttpClient client;
+        private readonly ILogger _logger;
         private string baseUrl;
 
-        public HttpHelper()
+        public HttpHelper(ILogger logger = default)
         {
-            client = new HttpClient
+            _logger = logger;
+               client = new HttpClient
             {
                 Timeout = TimeSpan.FromMilliseconds(DEFAULTREQUESTTIMEOUT)
             };
@@ -130,6 +133,7 @@ namespace GerencianetSDK
             }
 
             HttpRequestMessage request = new HttpRequestMessage();
+            _logger.LogDebug($"creating uri: { string.Format("{0}{1}", baseUrl, endpoint) }");
             request.RequestUri = new Uri(string.Format("{0}{1}", baseUrl, endpoint));
             request.Method = method;
             request.Headers.Add("ContentType", "application/json");
