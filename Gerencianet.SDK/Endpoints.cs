@@ -118,7 +118,7 @@ namespace GerencianetSDK
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             IRestResponse restResponse;
 
-            if (Certificate != null)
+            if (!string.IsNullOrWhiteSpace(Certificate))
             {
                 var client = new RestSharp.RestClient(baseURL + "/oauth/token");
                 X509Certificate2 uidCert = new X509Certificate2(certificate, "");
