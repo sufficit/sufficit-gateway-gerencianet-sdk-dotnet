@@ -4,37 +4,24 @@ using System.Text;
 
 namespace GerencianetSDK
 {
+    /// <summary>
+    /// Authentication Pair to Production Environment
+    /// </summary>
     public class APIAuthOptions : APIAuthPair
-    {
-        private APIAuthPair _prod;
-        private APIAuthPair _devel;
-        private APIAuthPair _play;
-
-        /// <summary>
-        /// Authentication Pair to Production Environment
-        /// </summary>
-        public APIAuthPair Production
-        {
-            get { return _prod ?? this; }
-            set { _prod = value; }
-        }
-
+    {       
         /// <summary>
         /// Authentication Pair to Development Environment
         /// </summary>
-        public APIAuthPair Development
-        {
-            get { return _devel ?? this; }
-            set { _devel = value; }
-        }
+        public APIAuthPair Development { get; set; }
 
         /// <summary>
         /// Authentication Pair to Playground Environment
         /// </summary>
-        public APIAuthPair Playground
-        {
-            get { return _play ?? this; }
-            set { _play = value; }
-        }
+        public APIAuthPair Playground { get; set; }
+
+        public override bool Equals(object other) =>
+            other is APIAuthOptions p && (p.Development, p.Playground, p.Id, p.Secret).Equals((Development, Playground, Id, Secret));
+
+        public override int GetHashCode() => (Development, Playground, Id, Secret).GetHashCode();
     }
 }

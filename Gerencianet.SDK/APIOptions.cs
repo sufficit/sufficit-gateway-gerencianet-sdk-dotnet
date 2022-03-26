@@ -6,7 +6,7 @@ namespace GerencianetSDK
 {
     public class APIOptions
     {
-        public const string SectionName = "Gerencianet";
+        public const string SECTIONNAME = "Gerencianet";
 
         public APIAuthOptions Auth { get; }
 
@@ -20,25 +20,19 @@ namespace GerencianetSDK
         /// </summary>
         public string Certificate { get; set; }
 
+        /// <summary>
+        /// Default Uri to notifications callback
+        /// </summary>
+        public string Notification { get; set; }
+
         public APIOptions()
         {
             Auth = new APIAuthOptions();
         }
 
-        public override bool Equals(object obj)
-        {
-            APIOptions other = obj as APIOptions;
-            if(other == null) return false;
+        public override bool Equals(object other) =>
+            other is APIOptions p && (p.Auth, p.SandBox, p.Certificate, p.Notification).Equals((Auth, SandBox, Certificate, Notification));
 
-            return
-                this.Auth == other.Auth &&
-                this.SandBox == other.SandBox &&
-                this.Certificate == other.Certificate;            
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => (Auth, SandBox, Certificate, Notification).GetHashCode();
     }
 }

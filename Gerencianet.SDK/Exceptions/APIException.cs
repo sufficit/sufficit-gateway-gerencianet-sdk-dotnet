@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using GerencianetSDK.Serializer;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +15,7 @@ namespace GerencianetSDK.Exceptions
         public static APIException FromJson(string source)
         {
             object def = new { };
-            dynamic jsonObject = JsonConvert.DeserializeAnonymousType(source, def);
+            dynamic jsonObject = JsonSerializerExtensions.DeserializeAnonymousType(source, def);
 
             string message = jsonObject.error.ToString();
             string description = jsonObject.error_description.ToString();

@@ -2,39 +2,61 @@
 <Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup Label="Sufficit Targeting">
-    <TargetFramework>netstandard2.0</TargetFramework>
+	  <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <RootNamespace>GerencianetSDK</RootNamespace>
-    <AssemblyName>GerencianetSDK</AssemblyName>
+	<LangVersion>9.0</LangVersion>
   </PropertyGroup>
+	
+	<PropertyGroup Label="Sufficit Versioning">
+		<VersionSuffix>1.$([System.DateTime]::UtcNow.ToString(yy)).$([System.DateTime]::UtcNow.ToString(MMdd)).$([System.DateTime]::UtcNow.ToString(HHmm))</VersionSuffix>
+		<AssemblyVersion Condition=" '$(VersionSuffix)' == '' ">1.0.0.0</AssemblyVersion>
+		<AssemblyVersion Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</AssemblyVersion>
+		<Version Condition=" '$(VersionSuffix)' == '' ">0.0.1.0</Version>
+		<Version Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</Version>
+	</PropertyGroup>
 
-  <PropertyGroup Label="Sufficit Versioning">
-    <VersionSuffix>1.$([System.DateTime]::UtcNow.ToString(yy)).$([System.DateTime]::UtcNow.ToString(MMdd)).$([System.DateTime]::UtcNow.ToString(HHmm))</VersionSuffix>
-    <AssemblyVersion Condition=" '$(VersionSuffix)' == '' ">1.0.0.0</AssemblyVersion>
-    <AssemblyVersion Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</AssemblyVersion>
-    <Version Condition=" '$(VersionSuffix)' == '' ">0.0.1.0</Version>
-    <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</Version>
-  </PropertyGroup>
+	<PropertyGroup Label="Sufficit Product General">
+		<Company>SUFFICIT SOLUÇÕES EM TECNOLOGIA DA INFORMAÇÃO</Company>
+		<Authors>Hugo Castro de Deco</Authors>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<ProductName>Gerencianet SDK - Sufficit Version</ProductName>
+		<AssemblyName>GerencianetSDK</AssemblyName>
 
-  <PropertyGroup Label="Sufficit Product General">
-    <Company>SUFFICIT SOLUÇÕES EM TECNOLOGIA DA INFORMAÇÃO</Company>
-    <Authors>Sufficit</Authors>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <ProductName>Gerencianet SDK by Sufficit</ProductName>
+		<!-- Copia todas as dlls de dependencias para o diretório de publicação dos projetos que o utilizam -->
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<PreserveCompilationReferences>false</PreserveCompilationReferences>
 
-    <!-- Copia todas as dlls de dependencias para o diretório de publicação dos projetos que o utilizam -->
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <PreserveCompilationReferences>true</PreserveCompilationReferences>
-
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-  </PropertyGroup>
-
+		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+	</PropertyGroup>
+	
   <PropertyGroup Label="Sufficit Pacote NUGET">
     <Name>Sufficit.Gerencianet.SDK</Name>
     <PackageId>Sufficit.Gerencianet.SDK</PackageId>
     <PackageDescription>Forked By Gerencianet and changed to .netstandard support</PackageDescription>
-    <RepositoryUrl>https://github.com/sufficit/sufficit-integration-gerencianet-sdk-dotnet</RepositoryUrl>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet</RepositoryUrl>
+	  <PackageProjectUrl>https://github.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet</PackageProjectUrl>
+	  <PackageIconUrl>https://raw.githubusercontent.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet/main/icon.ico</PackageIconUrl>
+	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+	  <PackageLicenseFile>license</PackageLicenseFile>
+	  <PackageReadmeFile>readme.md</PackageReadmeFile>
+	  <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+	  <None Include="../icon.png">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+	  </None>
+	  <None Include="../LICENSE">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+	  </None>
+	  <None Include="../README.md">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+	  </None>
+  </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <NoWarn>1701;1702;IDE0017</NoWarn>
@@ -42,14 +64,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="106.11.7" />
+    <PackageReference Include="RestSharp" Version="106.15.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
+    <PackageReference Include="System.Text.Json" Version="6.0.2" />
   </ItemGroup>
 
 </Project>

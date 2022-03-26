@@ -9,7 +9,13 @@ namespace GerencianetSDK
     /// </summary>
     public class APIAuthPair
     {
-        public virtual string id { get; set; }
-        public virtual string secret { get; set; }
+        public string Id { get; set; }
+
+        public string Secret { get; set; }
+
+        public override bool Equals(object other) =>
+            other is APIAuthPair p && (p.Id, p.Secret).Equals((Id, Secret));
+
+        public override int GetHashCode() => (Id, Secret).GetHashCode();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using GerencianetSDK.Exceptions;
+using GerencianetSDK.Serializer;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,6 +9,8 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,28 +19,15 @@ namespace GerencianetSDK
 {
     public class HttpHelper
     {
-        /// <summary>
-        /// Tempo padrão para expirar cada requisição individual ao serviço gerencianet <br />
-        /// Mili Segundos ex: (3000)ms
-        /// </summary>
-        public const int DEFAULTREQUESTTIMEOUT = 3000;
         private readonly HttpClient client;
         private readonly ILogger _logger;
-        private string baseUrl;
+        private readonly JsonSerializerOptions _serializerOptions;
 
-        public HttpHelper(ILogger logger = default)
+        public HttpHelper(JsonSerializerOptions serializerOptions, HttpClient httpClient, ILogger logger = default)
         {
+            _serializerOptions = serializerOptions;
+            client = httpClient;
             _logger = logger;
-               client = new HttpClient
-            {
-                Timeout = TimeSpan.FromMilliseconds(DEFAULTREQUESTTIMEOUT)
-            };
-        }
-
-        public string BaseUrl
-        {
-            get { return baseUrl; }
-            set { baseUrl = value; }
         }
 
         /// <summary>
@@ -87,7 +75,7 @@ namespace GerencianetSDK
                 endpoint += queryString;
             }
 
-            WebRequest request = HttpWebRequest.Create(string.Format("{0}{1}", baseUrl, endpoint));
+            WebRequest request = HttpWebRequest.Create(string.Format("{0}{1}", client.BaseAddress, endpoint));
             request.Method = method;
             request.ContentType = "application/json";
 
@@ -121,7 +109,7 @@ namespace GerencianetSDK
                 }
 
                 string queryString = "";
-                foreach (KeyValuePair<String, object> pair in queryDict)
+                foreach (KeyValuePair<string, object> pair in queryDict)
                 {
                     if (queryString.Equals(""))
                         queryString = "?";
@@ -133,20 +121,21 @@ namespace GerencianetSDK
             }
 
             HttpRequestMessage request = new HttpRequestMessage();
-            _logger.LogDebug($"creating uri: { string.Format("{0}{1}", baseUrl, endpoint) }");
-            request.RequestUri = new Uri(string.Format("{0}{1}", baseUrl, endpoint));
+            _logger.LogDebug($"creating uri: { string.Format("{0}{1}", client.BaseAddress, endpoint) }");
+            request.RequestUri = new Uri(string.Format("{0}{1}", client.BaseAddress, endpoint));
             request.Method = method;
             request.Headers.Add("ContentType", "application/json");
             return request;
         }
 
+        [Obsolete]
         public object SendRequest(WebRequest request, object body)
         {
             if (!request.Method.Equals("GET") && body != null)
             {
                 using (Stream postStream = request.GetRequestStream())
-                {
-                    var data = Encoding.UTF8.GetBytes(JObject.FromObject(body).ToString());
+                {                    
+                    var data = JsonSerializer.SerializeToUtf8Bytes(body);
                     postStream.Write(data, 0, data.Length);
                 }
             }
@@ -155,15 +144,15 @@ namespace GerencianetSDK
             {
                 StreamReader reader = new StreamReader(response.GetResponseStream());
                 object def = new { };
-                return JsonConvert.DeserializeAnonymousType(reader.ReadToEnd(), def);
+                return JsonSerializerExtensions.DeserializeAnonymousType(reader.ReadToEnd(), def, _serializerOptions);
             }
         }
 
-        public async Task<object> SendRequestAsync(HttpRequestMessage request, object body, CancellationToken cancellationToken = default)
+        public async Task<JsonElement> SendRequestAsync(HttpRequestMessage request, object body, CancellationToken cancellationToken = default)
         {
             if (!request.Method.Equals(HttpMethod.Get) && body != null)
-            {
-                var data = JObject.FromObject(body).ToString();
+            {                
+                var data = JsonSerializer.SerializeToElement(body, _serializerOptions).GetString();
                 request.Content = new StringContent(data, Encoding.UTF8, "application/json");                
             }
 
@@ -180,16 +169,18 @@ namespace GerencianetSDK
             {
                 throw new HttpClientTimeOutException(request, client.Timeout, cancellationToken, sw.ElapsedMilliseconds);
             }
-                           
-            string json = await response.Content.ReadAsStringAsync();
+
+            var json = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
+                
                 throw new GnException((int)response.StatusCode, response.ReasonPhrase, json);
             }
             else
             {
-                return JsonConvert.DeserializeObject(json);
+                JsonElement el = new JsonElement();
+                return JsonSerializerExtensions.DeserializeAnonymousType(json, el, _serializerOptions);
             }
-        }
+        }        
     }
 }

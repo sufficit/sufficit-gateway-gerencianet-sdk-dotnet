@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace GerencianetSDK
 {
@@ -337,7 +337,7 @@ namespace GerencianetSDK
 
         public string GetConstant()
         {
-            string jsonString = JsonConvert.SerializeObject(Const);
+            string jsonString = JsonSerializer.Serialize(Const);
             return jsonString;
         }
     }

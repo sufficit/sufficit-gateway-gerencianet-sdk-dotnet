@@ -1,5 +1,5 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using GerencianetSDK.Serializer;
+using System;
 
 namespace GerencianetSDK.Exceptions
 {
@@ -20,7 +20,7 @@ namespace GerencianetSDK.Exceptions
             try
             {
                 object def = new { };
-                dynamic jsonObject = JsonConvert.DeserializeAnonymousType(json, def);
+                dynamic jsonObject = JsonSerializerExtensions.DeserializeAnonymousType(json, def);
 
                 int code = jsonObject.code;
                 string error = jsonObject.error.ToString();
