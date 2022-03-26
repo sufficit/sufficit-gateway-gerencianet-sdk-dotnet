@@ -38,8 +38,8 @@
 	  <PackageIconUrl>https://raw.githubusercontent.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet/main/icon.ico</PackageIconUrl>
 	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
-	  <PackageLicenseFile>license</PackageLicenseFile>
-	  <PackageReadmeFile>readme.md</PackageReadmeFile>
+	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
