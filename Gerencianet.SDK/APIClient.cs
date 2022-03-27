@@ -81,7 +81,12 @@ namespace GerencianetSDK
 
         private async Task Authenticate(CancellationToken cancellationToken = default)
         {
-            
+            _token = await GetToken(_clientId, _clientSecret, cancellationToken);
+            UpdateAuthorizationHeaders(_token);
+        }
+
+        public async Task<string> GetToken(string id, string secret, CancellationToken cancellationToken = default)
+        {
             var credentials = string.Format("{0}:{1}", _clientId, _clientSecret);
             var encodedAuth = Convert.ToBase64String(Encoding.GetEncoding("UTF-8").GetBytes(credentials));
 
@@ -94,14 +99,13 @@ namespace GerencianetSDK
             request.Headers.Add("Authorization", string.Format("Basic {0}", encodedAuth));
             string jsonRequest = "{ \"grant_type\": \"client_credentials\" }";
             request.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            
+
             var response = await _http.SendAsync(request, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 _logger?.LogDebug($"token request: { jsonResponse }");
-                _token = JsonSerializer.Deserialize<JsonElement>(jsonResponse).GetProperty("access_token").ToString();// JObject.Parse(jsonResponse)["access_token"].ToString();
-                UpdateAuthorizationHeaders(_token);
+                return JsonSerializer.Deserialize<JsonElement>(jsonResponse).GetProperty("access_token").ToString();                
             }
             else throw new Exception("error on authenticate");
         }

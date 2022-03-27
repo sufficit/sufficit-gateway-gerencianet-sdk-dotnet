@@ -111,6 +111,19 @@ namespace GerencianetSDK
 
         private void Authenticate()
         {
+            // skipping to new method
+            if (string.IsNullOrWhiteSpace(Certificate))
+            {
+                // Trick to new system
+                var client = new APIClient(ClientId, ClientSecret);
+                var asyncTask = Task.Run(() => client.GetToken(ClientId, ClientSecret));
+                asyncTask.Wait();
+
+                Token = asyncTask.Result;
+                return;
+            }
+
+
             var credentials = string.Format("{0}:{1}", ClientId, ClientSecret);
             var encodedAuth = Convert.ToBase64String(Encoding.GetEncoding("UTF-8").GetBytes(credentials));
             var request = new RestRequest(Method.POST);

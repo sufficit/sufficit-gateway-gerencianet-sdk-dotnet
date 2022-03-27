@@ -74,7 +74,7 @@ namespace GerencianetSDK
                 }
                 endpoint += queryString;
             }
-
+                        
             WebRequest request = HttpWebRequest.Create(string.Format("{0}{1}", client.BaseAddress, endpoint));
             request.Method = method;
             request.ContentType = "application/json";
