@@ -71,7 +71,7 @@ namespace GerencianetSDK
             _http.DefaultRequestHeaders.Add("api-sdk", string.Format("dotnet-core-{0}", DEFAULTVERSION));
 
             _initialized = true;
-            _logger?.LogInformation("api client of gerencianet initialized");
+            _logger?.LogDebug("api client of gerencianet initialized");
         }
 
         private void UpdateAuthorizationHeaders(string token)
