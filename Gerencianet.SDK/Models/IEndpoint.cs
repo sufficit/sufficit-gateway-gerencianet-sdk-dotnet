@@ -23,6 +23,6 @@ namespace GerencianetSDK.Models
 
     public class IEndpoint<T> where T : IEndpoint, new()
     {
-        public static T Endpoint => new();
+        public static T Endpoint => new T();
     }
 }

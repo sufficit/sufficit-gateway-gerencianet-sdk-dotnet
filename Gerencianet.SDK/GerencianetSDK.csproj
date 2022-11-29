@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   
-  <PropertyGroup Label="Sufficit Targeting">
-	  <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
-    <RootNamespace>GerencianetSDK</RootNamespace>
-	<LangVersion>9.0</LangVersion>
-  </PropertyGroup>
+	<PropertyGroup Label="Sufficit Targeting">
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>GerencianetSDK</RootNamespace>
+		<LangVersion>8.0</LangVersion>
+		<ImplicitUsings>disable</ImplicitUsings>
+	</PropertyGroup>
 	
 	<PropertyGroup Label="Sufficit Versioning">
 		<VersionSuffix>1.$([System.DateTime]::UtcNow.ToString(yy)).$([System.DateTime]::UtcNow.ToString(MMdd)).$([System.DateTime]::UtcNow.ToString(HHmm))</VersionSuffix>
@@ -29,19 +30,19 @@
 		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
 	</PropertyGroup>
 	
-  <PropertyGroup Label="Sufficit Pacote NUGET">
-    <Name>Sufficit.Gerencianet.SDK</Name>
-    <PackageId>Sufficit.Gerencianet.SDK</PackageId>
-    <PackageDescription>Forked By Gerencianet and changed to .netstandard support</PackageDescription>
-    <RepositoryUrl>https://github.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet</RepositoryUrl>
-	  <PackageProjectUrl>https://github.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet</PackageProjectUrl>
-	  <PackageIconUrl>https://raw.githubusercontent.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet/main/icon.ico</PackageIconUrl>
-	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	<PropertyGroup Label="Sufficit Pacote NUGET">
+		<Name>Sufficit.Gerencianet.SDK</Name>
+		<PackageId>Sufficit.Gerencianet.SDK</PackageId>
+		<PackageDescription>Forked By Gerencianet and changed to .netstandard support</PackageDescription>
+		<RepositoryUrl>https://github.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet</PackageProjectUrl>
+		<PackageIconUrl>https://raw.githubusercontent.com/sufficit/sufficit-gateway-gerencianet-sdk-dotnet/main/icon.ico</PackageIconUrl>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
-	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
-	  <PackageReadmeFile>README.md</PackageReadmeFile>
-	  <PackageIcon>icon.png</PackageIcon>
-  </PropertyGroup>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>icon.png</PackageIcon>
+	</PropertyGroup>
 
   <ItemGroup>
 	  <None Include="../icon.png">
@@ -64,11 +65,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="106.11.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="RestSharp" Version="108.0.3" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Text.Json" Version="6.0.2" />
+    <PackageReference Include="System.Text.Json" Version="7.0.0" />
   </ItemGroup>
 
 </Project>

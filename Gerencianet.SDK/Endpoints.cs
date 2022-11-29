@@ -4,7 +4,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using System.Security.Cryptography.X509Certificates;
 using RestSharp;
 using System.Text.RegularExpressions;
 using System.Reflection;
@@ -25,8 +24,7 @@ namespace GerencianetSDK
         private static string token = null;
         private static bool sandbox;
         private static string certificate;
-        private string baseURL;
-
+        private string baseURL;        
 
         public Endpoints(JObject options)
         {
@@ -37,7 +35,7 @@ namespace GerencianetSDK
             endpoints = (JObject)constants["ENDPOINTS"];
             urls = (JObject)constants["URLS"];
             Sandbox = (bool)options["sandbox"];
-            Certificate = (string)options["pix_cert"];
+            Certificate = (string)options["pix_cert"];            
         }
 
         public Endpoints(string clientId, string clientSecret, bool sandbox = false, string certificate = default)
@@ -105,7 +103,7 @@ namespace GerencianetSDK
                     return true;
                 }
 
-                throw e;
+                throw;
             }
         }
 
@@ -123,29 +121,33 @@ namespace GerencianetSDK
                 return;
             }
 
-
             var credentials = string.Format("{0}:{1}", ClientId, ClientSecret);
             var encodedAuth = Convert.ToBase64String(Encoding.GetEncoding("UTF-8").GetBytes(credentials));
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("Authorization", string.Format("Basic {0}", encodedAuth));
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            IRestResponse restResponse;
+            
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; 
+            var restOptions = new RestClientOptions(baseURL)
+            {
+                RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+            };
 
+            var restClient = new RestClient(restOptions);
+
+            RestRequest request;
             if (!string.IsNullOrWhiteSpace(Certificate))
             {
-                var client = new RestSharp.RestClient(baseURL + "/oauth/token");
-                X509Certificate2 uidCert = new X509Certificate2(certificate, "");
-                client.ClientCertificates = new X509CertificateCollection() { uidCert };
+                request = new RestRequest("/oauth/token", Method.Post);
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", "{\r\n    \"grant_type\": \"client_credentials\"\r\n}", ParameterType.RequestBody);
-                restResponse = client.Execute(request);
             }
             else
             {
-                var client = new RestSharp.RestClient(baseURL + "/authorize");
+                request = new RestRequest("/authorize", Method.Post);
                 request.AddJsonBody("{\r\n    \"grant_type\": \"client_credentials\"\r\n}");
-                restResponse = client.Execute(request);
             }
+
+            request.AddHeader("Authorization", string.Format("Basic {0}", encodedAuth));
+            var restResponse = restClient.Execute(request);
+
             string response = restResponse.Content;
             JObject json = JObject.Parse(response);
             Token = json["access_token"].ToString();
@@ -158,11 +160,11 @@ namespace GerencianetSDK
 
             var request = new RestRequest();
 
-            if (method == "PUT") request.Method = Method.PUT;
-            else if (method == "GET") request.Method = Method.GET;
-            else if (method == "POST") request.Method = Method.POST;
-            else if (method == "DELETE") request.Method = Method.DELETE;
-            else if (method == "PATCH") request.Method = Method.PATCH;
+            if (method == "PUT") request.Method = Method.Put;
+            else if (method == "GET") request.Method = Method.Get;
+            else if (method == "POST") request.Method = Method.Post;
+            else if (method == "DELETE") request.Method = Method.Delete;
+            else if (method == "PATCH") request.Method = Method.Patch;
 
             request.AddHeader("Authorization", string.Format("Bearer {0}", Token));
             request.AddHeader("api-sdk", string.Format("dotnet-core-{0}", version));
@@ -235,15 +237,14 @@ namespace GerencianetSDK
             if (body != null)
                 request.AddJsonBody(body);
 
-            var client = new RestSharp.RestClient(baseURL + newEndpoint);
-
-            if (certificate != null)
+            var restOptions = new RestClientOptions(baseURL + newEndpoint)
             {
-                X509Certificate2 uidCert = new X509Certificate2(certificate, "");
-                client.ClientCertificates = new X509CertificateCollection() { uidCert };
-            }
+                RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+            };
 
-            IRestResponse restResponse = client.Execute(request);
+            var client = new RestSharp.RestClient(restOptions);
+
+            RestResponse restResponse = client.Execute(request);
             string response = restResponse.Content;
             return JObject.Parse(response);
         }

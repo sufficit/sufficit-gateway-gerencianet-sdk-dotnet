@@ -87,8 +87,9 @@ namespace GerencianetSDK
 
         public async Task<string> GetToken(string id, string secret, CancellationToken cancellationToken = default)
         {
-            var credentials = string.Format("{0}:{1}", _clientId, _clientSecret);
-            var encodedAuth = Convert.ToBase64String(Encoding.GetEncoding("UTF-8").GetBytes(credentials));
+            var credentials = string.Format("{0}:{1}", id, secret);
+            var bytesCredentials = Encoding.UTF8.GetBytes(credentials);
+            var encodedAuth = Convert.ToBase64String(bytesCredentials);
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 

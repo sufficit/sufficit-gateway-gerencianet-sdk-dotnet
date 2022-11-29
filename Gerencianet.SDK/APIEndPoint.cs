@@ -37,6 +37,6 @@ namespace GerencianetSDK
 
     public class APIEndPoint<T> where T : APIEndPoint, new()
     {
-        public static T Endpoint => new();
+        public static T Endpoint => new T();
     }
 }
