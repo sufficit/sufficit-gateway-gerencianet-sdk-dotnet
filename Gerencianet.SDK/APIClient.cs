@@ -14,6 +14,7 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using GerencianetSDK.Serializer;
 using GerencianetSDK.Endpoint;
+using System.Text.Json.Nodes;
 
 namespace GerencianetSDK
 {
@@ -32,27 +33,19 @@ namespace GerencianetSDK
         protected readonly JsonSerializerOptions _serializerOptions;
 
         private bool _initialized;
-        private string _clientId;
-        private string _clientSecret;
-        private string _token;
+        private string? _clientId;
+        private string? _clientSecret;
+        private string? _token;
 
-        public APIClient(string id, string secret) : this()
+        public APIClient(string id, string secret, ILogger logger) : this(logger)
         {
             Initialize(id, secret);
         }
 
-        public APIClient(ILogger logger = default) 
+        public APIClient(ILogger logger) 
         {
             _logger = logger;
-
-            _serializerOptions = new JsonSerializerOptions();
-            _serializerOptions.Converters.Add(new DateTimeConverter(_logger));
-            //_serializerOptions.Converters.Add(new ExceptionConverter());
-            //_serializerOptions.Converters.Add(new NotificationEventConverter(_logger)); 
-            _serializerOptions.AllowTrailingCommas = true;
-            _serializerOptions.PropertyNameCaseInsensitive = true;
-            _serializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull;
-            _serializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
+            _serializerOptions = JsonSerializerExtensions.Options;
 
             _http = new HttpClient
             {
@@ -79,9 +72,12 @@ namespace GerencianetSDK
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        private async Task Authenticate(CancellationToken cancellationToken = default)
+        private async Task Authenticate(CancellationToken cancellationToken)
         {
-            _token = await GetToken(_clientId, _clientSecret, cancellationToken);
+            if (string.IsNullOrWhiteSpace(_clientId) || string.IsNullOrWhiteSpace(_clientSecret))
+                throw new Exception("api client not initialized");
+
+            _token = await GetToken(_clientId!, _clientSecret!, cancellationToken);
             UpdateAuthorizationHeaders(_token);
         }
 
@@ -114,16 +110,30 @@ namespace GerencianetSDK
         public async Task<APIResponse> UpdateChargeMetadataAsync(uint chargeId, ChargeMetadata metadata, CancellationToken cancellationToken = default)
         {
             var param = new { id = chargeId };
-            var body = JsonSerializer.Serialize(metadata);
-            var response = await InvokeAsync<UpdateChargeMetadataEndpoint>(cancellationToken, param, body);
-            return response.Deserialize<APIResponse>(_serializerOptions);
+            try
+            {
+                var body = JsonSerializer.Serialize(metadata);
+                var response = await InvokeAsync<UpdateChargeMetadataEndpoint>(cancellationToken, param, body);
+                return response.Deserialize<APIResponse>(_serializerOptions)!;
+            }
+            catch (GnException ex)
+            {
+                return new GetNotificationResponse() { Exception = ex.Message, Code = ex.Code };
+            }
         }
 
         public async Task<APIResponse> GetChargeAsync(uint chargeId, CancellationToken cancellationToken = default)
         {
             var param = new { id = chargeId };
-            var response = await InvokeAsync<DetailChargeEndpoint>(cancellationToken, param);
-            return response.Deserialize<APIResponse>(_serializerOptions);
+            try
+            {
+                var response = await InvokeAsync<DetailChargeEndpoint>(cancellationToken, param);
+                return response.Deserialize<APIResponse>(_serializerOptions)!;
+            }
+            catch (GnException ex)
+            {
+                return new GetNotificationResponse() { Exception = ex.Message, Code = ex.Code };
+            }
         }
 
         /// <summary>
@@ -131,9 +141,15 @@ namespace GerencianetSDK
         /// </summary>
         public async Task<GetNotificationResponse> GetNotificationAsync(string notificationToken, CancellationToken cancellationToken = default)
         {
-            var param = new { token = notificationToken };
-            var response = await InvokeAsync<GetNotificationEndpoint>(cancellationToken, param);
-            return response.Deserialize<GetNotificationResponse>(_serializerOptions);
+            var param = new { token = notificationToken }; 
+            try
+            {
+                var response = await InvokeAsync<GetNotificationEndpoint>(cancellationToken, param);                            
+                return response.Deserialize<GetNotificationResponse>(_serializerOptions)!;
+            } catch (GnException ex)
+            {  
+                return new GetNotificationResponse() { Exception = ex.Message, Code = ex.Code };
+            }            
         }
 
         public async Task<JsonElement> InvokeAsync<T>(CancellationToken cancellationToken = default, params object[] args) where T : IEndpoint, new()
@@ -154,7 +170,8 @@ namespace GerencianetSDK
 
         public async Task<JsonElement> InvokeAsync(IEndpoint endpoint, CancellationToken cancellationToken = default, params object[] args)
         {
-            if (!_initialized) throw new Exception("not initialized");           
+            if (!_initialized) 
+                throw new Exception("not initialized");           
 
             object body = new { };
             object query = new { };
@@ -186,7 +203,7 @@ namespace GerencianetSDK
             }
         }
 
-        private async Task<JsonElement> RequestEndpointAsync(string endpoint, HttpMethod method, object query, object body, CancellationToken cancellationToken = default)
+        private async Task<JsonElement> RequestEndpointAsync(string endpoint, HttpMethod method, object query, object body, CancellationToken cancellationToken)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpRequestMessage request = _helper.GetHttpRequest(endpoint, method, query);

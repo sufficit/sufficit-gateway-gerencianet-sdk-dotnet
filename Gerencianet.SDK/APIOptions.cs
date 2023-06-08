@@ -18,19 +18,19 @@ namespace GerencianetSDK
         /// <summary>
         /// Certificate file for PIX Api
         /// </summary>
-        public string Certificate { get; set; }
+        public string? Certificate { get; set; }
 
         /// <summary>
         /// Default Uri to notifications callback
         /// </summary>
-        public string Notification { get; set; }
+        public string? Notification { get; set; }
 
         public APIOptions()
         {
             Auth = new APIAuthOptions();
         }
 
-        public override bool Equals(object other) =>
+        public override bool Equals(object? other) =>
             other is APIOptions p && (p.Auth, p.SandBox, p.Certificate, p.Notification).Equals((Auth, SandBox, Certificate, Notification));
 
         public override int GetHashCode() => (Auth, SandBox, Certificate, Notification).GetHashCode();

@@ -11,16 +11,8 @@ namespace GerencianetSDK.Serializer
 {
     public class DateTimeConverter : JsonConverter<DateTime>
     {
-        private readonly ILogger _logger;
-
-        public DateTimeConverter(ILogger logger) :base()
-        {
-            _logger = logger;
-        }
-
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            _logger.LogTrace($"reading json datetime: {reader.GetString()}");
             if (reader.TryGetDateTime(out DateTime date))
             {
                 return DateTime.SpecifyKind(date, DateTimeKind.Utc);

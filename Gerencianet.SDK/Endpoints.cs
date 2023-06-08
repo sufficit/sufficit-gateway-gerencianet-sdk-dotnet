@@ -11,11 +11,13 @@ using System.Collections.Generic;
 using GerencianetSDK.Exceptions;
 using System.Threading.Tasks;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace GerencianetSDK
 {
     public class Endpoints : DynamicObject
     {
+        private readonly ILogger _logger;
         private const string version = "2.0.1";
         private static string clientId;
         private static string clientSecret;
@@ -23,31 +25,19 @@ namespace GerencianetSDK
         private static JObject urls;
         private static string token = null;
         private static bool sandbox;
-        private static string certificate;
-        private string baseURL;        
+        private string? baseURL;        
 
-        public Endpoints(JObject options)
-        {
-            ClientId = (string)options["client_id"];
-            ClientSecret = (string)options["client_secret"];
-            Constants constant = new Constants();
-            JObject constants = JObject.Parse(constant.GetConstant());
-            endpoints = (JObject)constants["ENDPOINTS"];
-            urls = (JObject)constants["URLS"];
-            Sandbox = (bool)options["sandbox"];
-            Certificate = (string)options["pix_cert"];            
-        }
-
-        public Endpoints(string clientId, string clientSecret, bool sandbox = false, string certificate = default)
+        public Endpoints(string clientId, string clientSecret, ILogger logger)
         {
             ClientId = clientId;
             ClientSecret = clientSecret;
+            _logger = logger;
+
             Constants constant = new Constants();
             JObject constants = JObject.Parse(constant.GetConstant());
             endpoints = (JObject)constants["ENDPOINTS"];
             urls = (JObject)constants["URLS"];
-            Sandbox = sandbox;
-            Certificate = certificate;
+            Sandbox = false;
         }
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
@@ -113,7 +103,7 @@ namespace GerencianetSDK
             if (string.IsNullOrWhiteSpace(Certificate))
             {
                 // Trick to new system
-                var client = new APIClient(ClientId, ClientSecret);
+                var client = new APIClient(ClientId, ClientSecret, _logger);
                 var asyncTask = Task.Run(() => client.GetToken(ClientId, ClientSecret));
                 asyncTask.Wait();
 
@@ -184,7 +174,7 @@ namespace GerencianetSDK
             {
                 if (e.Response != null && e.Response is HttpWebResponse webResponse)
                 {
-                    var statusCode = (int)webResponse.StatusCode;
+                    var statusCode = (uint)webResponse.StatusCode;
                     var reader = new StreamReader(webResponse.GetResponseStream());
                     throw GnException.Build(reader.ReadToEnd(), statusCode);
                 }
@@ -252,7 +242,7 @@ namespace GerencianetSDK
         private static string ClientId { get => clientId; set => clientId = value; }
         public static string ClientSecret { get => clientSecret; set => clientSecret = value; }
         public static bool Sandbox { get => sandbox; set => sandbox = value; }
-        public static string Certificate { get => certificate; set => certificate = value; }
+        public static string? Certificate { get; set; }
         public static string Token { get => token; set => token = value; }
     }
 }

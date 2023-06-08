@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -23,11 +24,11 @@ namespace GerencianetSDK
         private readonly ILogger _logger;
         private readonly JsonSerializerOptions _serializerOptions;
 
-        public HttpHelper(JsonSerializerOptions serializerOptions, HttpClient httpClient, ILogger logger = default)
+        public HttpHelper(JsonSerializerOptions serializerOptions, HttpClient httpClient, ILogger? logger = default)
         {
             _serializerOptions = serializerOptions;
             client = httpClient;
-            _logger = logger;
+            _logger = logger!;
         }
 
         /// <summary>
@@ -128,27 +129,7 @@ namespace GerencianetSDK
             return request;
         }
 
-        [Obsolete]
-        public object SendRequest(WebRequest request, object body)
-        {
-            if (!request.Method.Equals("GET") && body != null)
-            {
-                using (Stream postStream = request.GetRequestStream())
-                {                    
-                    var data = JsonSerializer.SerializeToUtf8Bytes(body);
-                    postStream.Write(data, 0, data.Length);
-                }
-            }
-
-            using (WebResponse response = request.GetResponse())
-            {
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-                object def = new { };
-                return JsonSerializerExtensions.DeserializeAnonymousType(reader.ReadToEnd(), def, _serializerOptions);
-            }
-        }
-
-        public async Task<JsonElement> SendRequestAsync(HttpRequestMessage request, object body, CancellationToken cancellationToken = default)
+        public async Task<JsonElement> SendRequestAsync(HttpRequestMessage request, object body, CancellationToken cancellationToken)
         {
             if (!request.Method.Equals(HttpMethod.Get) && body != null)
             {                
@@ -173,13 +154,11 @@ namespace GerencianetSDK
             var json = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                
-                throw new GnException((int)response.StatusCode, response.ReasonPhrase, json);
+                throw GnException.Build(json, (uint)response.StatusCode);
             }
             else
             {
-                JsonElement el = new JsonElement();
-                return JsonSerializerExtensions.DeserializeAnonymousType(json, el, _serializerOptions);
+                return JsonSerializer.Deserialize<JsonElement>(json, _serializerOptions);
             }
         }        
     }

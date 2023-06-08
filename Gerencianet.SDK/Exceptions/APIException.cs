@@ -10,19 +10,18 @@ namespace GerencianetSDK.Exceptions
     /// </summary>
     public class APIException : Exception
     {
-        public APIException(string message, Exception inner = default) : base(message, inner) { }
+        public APIException(string message, Exception? inner = default) : base(message, inner) { }
 
         public static APIException FromJson(string source)
         {
-            object def = new { };
-            dynamic jsonObject = JsonSerializerExtensions.DeserializeAnonymousType(source, def);
+            var converted = JsonSerializerExtensions.Deserialize<APIResponseError>(source);
 
-            string message = jsonObject.error.ToString();
-            string description = jsonObject.error_description.ToString();
+            string message = converted.ErrorType;
+            string description = converted.Description?.Message ?? "internal server error";
 
             var ex = new APIException(message, new Exception(description))
             {
-                HResult = jsonObject.code
+                HResult = (int)converted.Code
             };
             return ex;
         }
