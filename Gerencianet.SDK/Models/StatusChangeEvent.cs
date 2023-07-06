@@ -8,7 +8,7 @@ namespace GerencianetSDK.Models
 {
     [DataContract]
     [Serializable]
-    public class StatusChangeEvent
+    public struct StatusChangeEvent
     {
         [DataMember(Name = "current", IsRequired = true)]
         [JsonPropertyName("current"), JsonPropertyOrder(0)]
@@ -16,6 +16,6 @@ namespace GerencianetSDK.Models
 
         [DataMember(Name = "previous", IsRequired = false, EmitDefaultValue = false)]
         [JsonPropertyName("previous"), JsonPropertyOrder(1), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull | JsonIgnoreCondition.WhenWritingDefault)]
-        public string Previous { get; set; }
+        public string? Previous { get; set; }
     }
 }

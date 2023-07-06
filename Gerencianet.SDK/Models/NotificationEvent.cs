@@ -14,18 +14,20 @@ namespace GerencianetSDK.Models
         [JsonPropertyName("id"), JsonPropertyOrder(0)]
         public uint Id { get; set; }
 
+        /// <summary>
+        /// Date Time at São Paulo Format (GMT-3)
+        /// </summary>
         [DataMember(Name = "created_at", IsRequired = true)]
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
 
         [DataMember(Name = "type", IsRequired = true)]
         [JsonPropertyName("type")]
-        public string Type { get; set; }
-
+        public string Type { get; set; } = default!;
 
         [DataMember(Name = "custom_id", EmitDefaultValue = false, IsRequired = false)]
         [JsonPropertyName("custom_id"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull | JsonIgnoreCondition.WhenWritingDefault)]
-        public string CustomId { get; set; }
+        public string? CustomId { get; set; }
 
         [DataMember(Name = "value", EmitDefaultValue = false, IsRequired = false)]
         [JsonPropertyName("value"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
@@ -36,11 +38,11 @@ namespace GerencianetSDK.Models
         public DateTime ReceivedByBankAt { get; set; }
 
         [DataMember(Name = "status", EmitDefaultValue = false, IsRequired = false)]
-        [JsonPropertyName("status"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("status"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public StatusChangeEvent Status { get; set; }
 
         [DataMember(Name = "identifiers", EmitDefaultValue = false, IsRequired = false)]
         [JsonPropertyName("identifiers"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public ChargeIdentifier Identifiers { get; set; }
+        public ChargeIdentifier? Identifiers { get; set; }
     }
 }
