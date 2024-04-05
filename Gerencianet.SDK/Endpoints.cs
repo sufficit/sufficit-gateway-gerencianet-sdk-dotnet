@@ -12,15 +12,17 @@ using GerencianetSDK.Exceptions;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using System.Xml.Linq;
 
 namespace GerencianetSDK
 {
     public class Endpoints : DynamicObject
     {
+        public string ClientId { get; }
+
         private readonly ILogger _logger;
         private const string version = "2.0.1";
-        private static string clientId;
-        private static string clientSecret;
+        private readonly string ClientSecret;
         private static JObject endpoints;
         private static JObject urls;
         private static string token = null;
@@ -40,7 +42,7 @@ namespace GerencianetSDK
             Sandbox = false;
         }
 
-        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
+        public override bool TryInvokeMember(InvokeMemberBinder binder, object?[]? args, out object? result)
         {
             JObject endpoint;
             if ((JObject)endpoints["PIX"][binder.Name] != null)
@@ -138,9 +140,12 @@ namespace GerencianetSDK
             request.AddHeader("Authorization", string.Format("Basic {0}", encodedAuth));
             var restResponse = restClient.Execute(request);
 
-            string response = restResponse.Content;
-            JObject json = JObject.Parse(response);
-            Token = json["access_token"].ToString();
+            var response = restResponse.Content;
+            if (!string.IsNullOrWhiteSpace(response))
+            {
+                var json = JObject.Parse(response!);
+                Token = json["access_token"]?.ToString() ?? string.Empty;
+            }
         }
 
         private object RequestEndpoint(string endpoint, string method, object query, object body, string headersComplement)
@@ -238,9 +243,7 @@ namespace GerencianetSDK
             string response = restResponse.Content;
             return JObject.Parse(response);
         }
-
-        private static string ClientId { get => clientId; set => clientId = value; }
-        public static string ClientSecret { get => clientSecret; set => clientSecret = value; }
+        
         public static bool Sandbox { get => sandbox; set => sandbox = value; }
         public static string? Certificate { get; set; }
         public static string Token { get => token; set => token = value; }

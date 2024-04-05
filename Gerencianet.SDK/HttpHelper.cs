@@ -34,16 +34,13 @@ namespace GerencianetSDK
         /// <summary>
         /// Monta a solicitação
         /// </summary>
-        /// <param name="endpoint"></param>
-        /// <param name="method"></param>
-        /// <param name="query"></param>
-        /// <returns></returns>
+        [Obsolete]
         public WebRequest GetWebRequest(string endpoint, string method, object query)
         {
             if (query != null)
             {
                 var attr = BindingFlags.Public | BindingFlags.Instance;
-                var queryDict = new Dictionary<string, object>();
+                var queryDict = new Dictionary<string, object?>();
                 foreach (var property in query.GetType().GetProperties(attr))
                 {
                     if (property.CanRead)
@@ -56,7 +53,7 @@ namespace GerencianetSDK
                     string resource = matchCollection[i].Groups[1].Value;
                     try
                     {
-                        var value = queryDict[resource].ToString();
+                        var value = queryDict[resource]?.ToString() ?? string.Empty;
                         endpoint = Regex.Replace(endpoint, string.Format(":{0}", resource), value);
                         queryDict.Remove(resource);
                     }
@@ -65,18 +62,18 @@ namespace GerencianetSDK
                 }
 
                 string queryString = "";
-                foreach (KeyValuePair<string, object> pair in queryDict)
+                foreach (KeyValuePair<string, object?> pair in queryDict)
                 {
                     if (queryString.Equals(""))
                         queryString = "?";
                     else
                         queryString += "&";
-                    queryString += string.Format("{0}={1}", pair.Key, pair.Value.ToString());
+                    queryString += string.Format("{0}={1}", pair.Key, pair.Value?.ToString());
                 }
                 endpoint += queryString;
             }
                         
-            WebRequest request = HttpWebRequest.Create(string.Format("{0}{1}", client.BaseAddress, endpoint));
+            var request = HttpWebRequest.Create(string.Format("{0}{1}", client.BaseAddress, endpoint));
             request.Method = method;
             request.ContentType = "application/json";
 
@@ -88,7 +85,7 @@ namespace GerencianetSDK
             if (query != null)
             {
                 var attr = BindingFlags.Public | BindingFlags.Instance;
-                var queryDict = new Dictionary<string, object>();
+                var queryDict = new Dictionary<string, object?>();
                 foreach (var property in query.GetType().GetProperties(attr))
                 {
                     if (property.CanRead)
@@ -101,7 +98,7 @@ namespace GerencianetSDK
                     string resource = matchCollection[i].Groups[1].Value;
                     try
                     {
-                        var value = queryDict[resource].ToString();
+                        var value = queryDict[resource]?.ToString() ?? string.Empty;
                         endpoint = Regex.Replace(endpoint, string.Format(":{0}", resource), value);
                         queryDict.Remove(resource);
                     }
@@ -110,18 +107,18 @@ namespace GerencianetSDK
                 }
 
                 string queryString = "";
-                foreach (KeyValuePair<string, object> pair in queryDict)
+                foreach (KeyValuePair<string, object?> pair in queryDict)
                 {
                     if (queryString.Equals(""))
                         queryString = "?";
                     else
                         queryString += "&";
-                    queryString += string.Format("{0}={1}", pair.Key, pair.Value.ToString());
+                    queryString += string.Format("{0}={1}", pair.Key, pair.Value?.ToString());
                 }
                 endpoint += queryString;
             }
 
-            HttpRequestMessage request = new HttpRequestMessage();
+            var request = new HttpRequestMessage();
             _logger.LogDebug($"creating uri: { string.Format("{0}{1}", client.BaseAddress, endpoint) }");
             request.RequestUri = new Uri(string.Format("{0}{1}", client.BaseAddress, endpoint));
             request.Method = method;
@@ -134,7 +131,7 @@ namespace GerencianetSDK
             if (!request.Method.Equals(HttpMethod.Get) && body != null)
             {                
                 var data = JsonSerializer.SerializeToElement(body, _serializerOptions).GetString();
-                request.Content = new StringContent(data, Encoding.UTF8, "application/json");                
+                request.Content = new StringContent(data ?? string.Empty, Encoding.UTF8, "application/json");                
             }
 
             HttpResponseMessage response;

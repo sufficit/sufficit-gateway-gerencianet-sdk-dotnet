@@ -27,6 +27,6 @@ namespace GerencianetSDK
         /// </summary>        
         [DataMember(Name = "exception", IsRequired = false, EmitDefaultValue = false, Order = 2)]
         [JsonPropertyName("exception"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull | JsonIgnoreCondition.WhenWritingDefault), JsonPropertyOrder(2)]
-        public string Exception { get; set; }
+        public string? Exception { get; set; }
     }
 }

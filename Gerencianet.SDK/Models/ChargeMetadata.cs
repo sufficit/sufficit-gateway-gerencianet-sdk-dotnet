@@ -12,10 +12,10 @@ namespace GerencianetSDK.Models
     {
         [DataMember(Name = "notification_url", EmitDefaultValue = false, IsRequired = false)]
         [JsonPropertyName("notification_url"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull | JsonIgnoreCondition.WhenWritingDefault)]
-        public string NotificationUrl { get; set; }
+        public string? NotificationUrl { get; set; }
 
         [DataMember(Name = "custom_id", EmitDefaultValue = false, IsRequired = false)]
         [JsonPropertyName("custom_id"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull | JsonIgnoreCondition.WhenWritingDefault)]
-        public string CustomId { get; set; }
+        public string? CustomId { get; set; }
     }
 }

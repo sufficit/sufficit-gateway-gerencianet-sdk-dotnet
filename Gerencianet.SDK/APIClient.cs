@@ -160,7 +160,7 @@ namespace GerencianetSDK
 
         public async Task<JsonElement> InvokeAsync(string EndPointTitle, CancellationToken cancellationToken = default, params object[] args)
         {
-            IEndpoint endpoint = APIConstants.ENDPOINTS.Find(s => s.Title.Trim().ToLowerInvariant() == EndPointTitle.Trim().ToLowerInvariant());
+            var endpoint = APIConstants.ENDPOINTS.Find(s => s.Title.Trim().ToLowerInvariant() == EndPointTitle.Trim().ToLowerInvariant());
             if (endpoint == null)
                 throw new GnException(0, "invalid_endpoint", string.Format("Método '{0}' inexistente", EndPointTitle));
 
@@ -207,7 +207,7 @@ namespace GerencianetSDK
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpRequestMessage request = _helper.GetHttpRequest(endpoint, method, query);
-            _logger?.LogDebug($"requesting: { request.RequestUri }");
+            _logger?.LogDebug("requesting: {uri}", request.RequestUri);
 
             request.Headers.Add("Authorization", string.Format("Bearer {0}", _token));
             request.Headers.Add("api-sdk", string.Format("dotnet-{0}", DEFAULTVERSION));

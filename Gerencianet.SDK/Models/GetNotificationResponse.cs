@@ -15,6 +15,6 @@ namespace GerencianetSDK.Models
         /// </summary>
         [DataMember(Name = "data", IsRequired = false, EmitDefaultValue = false, Order = 1)]
         [JsonPropertyName("data"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull | JsonIgnoreCondition.WhenWritingDefault), JsonPropertyOrder(1)]
-        public new IEnumerable<NotificationEvent> Data { get; set; }
+        public new IEnumerable<NotificationEvent>? Data { get; set; }
     }
 }
