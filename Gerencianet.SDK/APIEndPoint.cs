@@ -12,7 +12,13 @@ namespace GerencianetSDK
     /// </summary>
     public class APIEndPoint : IEndpoint
     {
-        public APIEndPoint() { }
+        [Obsolete]
+        public APIEndPoint() { 
+            Title = string.Empty;
+            Route = string.Empty;
+            Method = HttpMethod.Post;
+        }
+
         public APIEndPoint(string title, string route, HttpMethod method)
         {
             if (string.IsNullOrWhiteSpace(route))
