@@ -4,9 +4,6 @@
 	<PropertyGroup Label="Sufficit Targeting">
 		<TargetFrameworks>netstandard2.0;net7.0;net8.0;net9.0</TargetFrameworks>
 		<RootNamespace>GerencianetSDK</RootNamespace>
-		<Nullable>enable</Nullable>
-		<LangVersion>8.0</LangVersion>
-		<ImplicitUsings>disable</ImplicitUsings>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Sufficit Versioning">
@@ -64,26 +61,54 @@
     <NoWarn>1701;1702;IDE0017</NoWarn>
   </PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	<!-- #region Sufficit Versioning Options V:202508231708 -->
+
+	<PropertyGroup Label="Sufficit Versioning Options" Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PkgVersion>[9.*,10.0.0)</PkgVersion>
 		<NoWarn>$(NoWarn);nullable</NoWarn>
+
+		<!-- Set language version per framework to ensure compatibility with generated global usings -->
+		<LangVersion>8.0</LangVersion>
 	</PropertyGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="[*,9.0.0)" />
-		<PackageReference Include="System.Net.Http.Json" Version="[*,9.0.0)" />
-		<PackageReference Include="System.Text.Json" Version="[*,9.0.0)" />
-	</ItemGroup>
+	<PropertyGroup Label="Sufficit Versioning Options" Condition=" '$(TargetFramework)' == 'net6.0' ">
+		<PkgVersion>[*,7.0.0)</PkgVersion>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net8.0' Or '$(TargetFramework)' == 'net9.0' ">
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="[*,10.0.0)" />
-		<PackageReference Include="System.Net.Http.Json" Version="[*,10.0.0)" />
-		<PackageReference Include="System.Text.Json" Version="[*,10.0.0)" />
-	</ItemGroup>
-	
+	<PropertyGroup Label="Sufficit Versioning Options" Condition=" '$(TargetFramework)' == 'net7.0' ">
+		<PkgVersion>[*,8.0.0)</PkgVersion>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Sufficit Versioning Options" Condition=" '$(TargetFramework)' == 'net8.0' ">
+		<PkgVersion>[8.*,10.0.0)</PkgVersion>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Sufficit Versioning Options" Condition=" '$(TargetFramework)' == 'net9.0' ">
+		<PkgVersion>[9.*,10.0.0)</PkgVersion>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<!-- #endregion -->
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="RestSharp" Version="112.1.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="*" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(PkgVersion)" />
+		<PackageReference Include="System.Net.Http.Json" Version="$(PkgVersion)" />
+		<PackageReference Include="System.Text.Json" Version="[8.0.5,9.0.0)" Condition=" '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0' " />
+		<PackageReference Include="System.Text.Json" Version="$(PkgVersion)" Condition=" '$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'netstandard2.0' " />
+	</ItemGroup>
+
 </Project>
