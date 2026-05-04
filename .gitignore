@@ -18,8 +18,9 @@
 x64/
 x86/
 bld/
-[Bb]in/
-[Oo]bj/
+**/[Bb]in/
+**/[Oo]bj/
+**/tmp/
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -237,3 +238,19 @@ _Pvt_Extensions
 
 # nuget
 Gerencianet.SDK/nuget.exe
+tmp/build/server/GerencianetSDK.deps.json
+tmp/build/server/GerencianetSDK.dll
+tmp/build/server/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+tmp/build/server/Microsoft.Extensions.Logging.Abstractions.dll
+tmp/build/server/Newtonsoft.Json.dll
+tmp/build/server/RestSharp.dll
+tmp/build/server/System.Net.Http.Json.dll
+tmp/build/server/System.Text.Json.dll
+tmp/testbuild/anthropic/GerencianetSDK.deps.json
+tmp/testbuild/anthropic/GerencianetSDK.dll
+tmp/testbuild/anthropic/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+tmp/testbuild/anthropic/Microsoft.Extensions.Logging.Abstractions.dll
+tmp/testbuild/anthropic/Newtonsoft.Json.dll
+tmp/testbuild/anthropic/RestSharp.dll
+tmp/testbuild/anthropic/System.Net.Http.Json.dll
+tmp/testbuild/anthropic/System.Text.Json.dll
