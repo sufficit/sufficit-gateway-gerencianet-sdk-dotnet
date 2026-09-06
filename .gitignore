@@ -254,3 +254,5 @@ tmp/testbuild/anthropic/Newtonsoft.Json.dll
 tmp/testbuild/anthropic/RestSharp.dll
 tmp/testbuild/anthropic/System.Net.Http.Json.dll
 tmp/testbuild/anthropic/System.Text.Json.dll
+# Worktrees (padrao): arvores de trabalho em <repo>/.worktrees/
+**/.worktrees/

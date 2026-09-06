@@ -1,5 +1,8 @@
 # gn-api-sdk-dotnet
 
+> **Worktrees (padrão Sufficit):** toda árvore de trabalho deste projeto (humanos ou agentes de IA) deve ser criada dentro da pasta do próprio projeto: `git worktree add .worktrees/<nome>`. A pasta `.worktrees/` é ignorada pelo git (`.gitignore` → `**/.worktrees/`) e nunca deve ser versionada ou criada fora da raiz do repositório.
+
+
 > A .NET library for integration of your application with the payment services
 provided by [Gerencianet](http://gerencianet.com.br).
 
