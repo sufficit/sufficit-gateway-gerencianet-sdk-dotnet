@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   
 	<PropertyGroup Label="Sufficit Targeting">
@@ -64,7 +64,7 @@
 	<!-- #region Sufficit Versioning Options V:202508251150 -->
 
 	<PropertyGroup Label="Sufficit Versioning Options" Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PkgVersion>[9.*,10.0.0)</PkgVersion>
+		<PkgVersion>[9.*,11.0.0)</PkgVersion>
 		<PkgVersionUntil8>[*,10.0.0)</PkgVersionUntil8>
 		<NoWarn>$(NoWarn);nullable</NoWarn>
 
@@ -80,7 +80,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Label="Sufficit Versioning Options" Condition=" '$(TargetFramework)' == 'net7.0' ">
-		<PkgVersion>[*,8.0.0)</PkgVersion>
+		<PkgVersion>[7.*,11.0.0)</PkgVersion>
 		<PkgVersionUntil8>[8.*,10.0.0)</PkgVersionUntil8>
 		<LangVersion>10.0</LangVersion>
 		<Nullable>enable</Nullable>
@@ -88,7 +88,7 @@
 
 
 	<PropertyGroup Label="Sufficit Versioning Options" Condition=" '$(TargetFramework)' == 'net9.0' ">
-		<PkgVersion>[9.*,10.0.0)</PkgVersion>
+		<PkgVersion>[9.*,11.0.0)</PkgVersion>
 		<PkgVersionUntil8>[*,10.0.0)</PkgVersionUntil8>
 		<LangVersion>10.0</LangVersion>
 		<Nullable>enable</Nullable>
@@ -106,7 +106,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(PkgVersion)" />
 		<PackageReference Include="System.Net.Http.Json" Version="$(PkgVersion)" />
-		<PackageReference Include="System.Text.Json" Version="[8.0.5,9.0.0)" Condition=" '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0' " />
+		<PackageReference Include="System.Text.Json" Version="[8.0.5,11.0.0)" Condition=" '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0' " />
 		<PackageReference Include="System.Text.Json" Version="$(PkgVersion)" Condition=" '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'netstandard2.0' " />
 	</ItemGroup>
 
